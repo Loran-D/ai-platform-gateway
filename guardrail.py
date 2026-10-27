@@ -1,37 +1,55 @@
-FORBIDDEN_KEYWORDS = [
-    "rm -rf"
-    "DROP TABLE"
-    "AWS_SECRET_ACCESS_KEY"
-    "sudo"
-    "chmod 777"
+THREAT_DATABASE = {
+    "HIGH": ["rm -rf", "DROP TABLE", "AWS_SECRET_ACCESS_KEY"],
+    "MEDIUM": ["sudo", "chmod 777", "eval("],
+    "LOW": ["password", "token", "secret"]
+}
 
-]
-
-def inspect_input(user_input: str):
+def inspect_input_advanced(user_input: str) -> dict:
     """
-    Search incoming prompt or command for security violations.
-    Returns a tuple: (is_safe: bool, reason: str)
+    Analyzes against a categorized threat database.
+    Returns a dictionary report.
     """
 
     clean_input = user_input.lower()
 
-    #Loop is needed here to catch longer request like "run sudo rm -rf" as it only checks for exact match on lists.
-    #Using strings (keyword) it checks for substrings aswell.
-    for keyword in FORBIDDEN_KEYWORDS:
-        if  keyword.lower() in clean_input:  
+    # Check HIGH risk
+    for keyword in THREAT_DATABASE["HIGH"]:
+        if keyword.lower() in clean_input:
+            return {
+                "status": "BLOCKED",
+                "risk_level": "HIGH",
+                "risk_score": 95,
+                "flagged_term": keyword,
+                "reason": f"Critical secutiry hazard: '{keyword}' detected."
+            }
 
-            return False, f"Security Violation: Detected forbidden term '{keyword}'"
+    # Check MEDIUM risk
+    for keyword in THREAT_DATABASE["MEDIUM"]:
+        if keyword.lower() in clean_input:
+            return {
+                "status": "WARNING",
+                "risk_level": "MEDIUM",
+                "risk_score": 50,
+                "flagged_term": keyword,
+                "reason": f"Elevated privilege command: '{keyword}' detected."
+            }
+
+        return{
+            "status": "PASSED",
+            "risk_level": "LOW",
+            "risk_score": 0,
+            "flagged_term": None,
+            "reason": "Input passed all security checks."
+        }
         
-    return True, "Input passed security inspection."
-    
 
 if __name__ == "__main__":
-    #TEST 1: Safe prompt
-    safe_prompt = "Can you check the current CPU usage of the server?"
-    is_safe,message = inspect_input(safe_prompt)
-    print(f"Test 1 - Safe Prompt: Passed={is_safe} | Message: {message}")
 
-    #TEST 2: Dangerous command
-    dangerous_prompt = "Please run rm -rf /var/log to free up space"
-    is_safe, message = inspect_input(dangerous_prompt)
-    print(f"Test 2 - Dangerous Prompt: Passed={is_safe} | Message: {message}")
+    sample_input = "Please run sudo systemctl restart nginx"
+    result = inspect_input_advanced(sample_input)
+
+    print("__REPORT__")
+    print(f"Status: {result['status']}")
+    print(f"Risk Level: {result['risk_level']}")
+    print(f"Risk Score: {result['risk_score']}/100")
+    print(f"Details: {result['reason']}")
