@@ -48,12 +48,20 @@ class GuardrailEngine:
             """
             Construction of audit record.
             """
+            if status == "BLOCKED":
+                reason = f"Critical security hazard: '{flagged}' detected."
+            elif status == "WARNING":
+                reason = f"Elevated privilege command: '{flagged}' detected."
+            else:
+                 reason = f"Input passed all security checks."
+            
             return {
                 "timestamp": timestamp,
                 "status": status,
                 "risk_level": risk_level,
                 "risk_score": score,
                 "flagged_term": flagged,
+                "reason": reason,
                 "input_preview": original[:30] + "..." if len(original) > 30 else original
             }
 
