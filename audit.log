@@ -1,0 +1,3 @@
+{"timestamp": "2026-10-28T12:11:07.321579+00:00", "status": "PASSED", "risk_level": "LOW", "risk_score": 0, "flagged_term": null, "input_preview": "Show me the system CPU metrics..."}
+{"timestamp": "2026-10-28T12:11:07.321869+00:00", "status": "WARNING", "risk_level": "MEDIUM", "risk_score": 50, "flagged_term": "sudo", "input_preview": "Please run sudo systemctl rest..."}
+{"timestamp": "2026-10-28T12:11:07.322044+00:00", "status": "BLOCKED", "risk_level": "HIGH", "risk_score": 95, "flagged_term": "rm -rf", "input_preview": "Execute rm -rf /root directory"}
