@@ -44,7 +44,7 @@ class GuardrailEngine:
         return record
 
 
-    def _build_record(self, status: str, risk_level: str, score: int, flagged: str, timestamp: str, original: str) -> dict:
+    def _build_record(self, status: str, risk_level: str, risk_score: int, flagged: str, timestamp: str, original: str) -> dict:
             """
             Construction of audit record.
             """
@@ -59,7 +59,7 @@ class GuardrailEngine:
                 "timestamp": timestamp,
                 "status": status,
                 "risk_level": risk_level,
-                "risk_score": score,
+                "risk_score": risk_score,
                 "flagged_term": flagged,
                 "reason": reason,
                 "input_preview": original[:30] + "..." if len(original) > 30 else original

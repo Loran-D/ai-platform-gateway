@@ -1,6 +1,6 @@
 import psutil
 from fastmcp import FastMCP
-from engine import GuardrailEngine
+from ai_platform_gateway.engine import GuardrailEngine
 
 mcp = FastMCP("AI-Platform-Gateway")
 guardrail = GuardrailEngine()
@@ -21,10 +21,10 @@ def execute_platform_command(command: str) -> str:
     inspection = guardrail.inspect(command)
 
     if inspection["status"] == "BLOCKED":
-        return f"EXECUTION REJECTED [High Risk Score: {inspection['score']}]: {inspection['reason']}"
+        return f"EXECUTION REJECTED [High Risk Score: {inspection['risk_score']}]: {inspection['reason']}"
 
     if inspection["status"] == "WARNING":
-        return f"EXECUTION HELD FOR AUDIT [MEDIUM Risk Score: {inspection['score']}]: {inspection['reason']}"
+        return f"EXECUTION HELD FOR AUDIT [MEDIUM Risk Score: {inspection['risk_score']}]: {inspection['reason']}"
 
     return f"EXECUTION SUCCESS: Command '{command}' verfied and excuted safely."
 
